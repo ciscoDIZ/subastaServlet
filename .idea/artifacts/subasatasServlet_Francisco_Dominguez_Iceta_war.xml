@@ -1,0 +1,14 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="subasatasServlet_Francisco_Dominguez_Iceta:war">
+    <output-path>$PROJECT_DIR$/target</output-path>
+    <properties id="maven-jee-properties">
+      <options>
+        <module>subasatasServlet_Francisco_Dominguez_Iceta</module>
+        <packaging>war</packaging>
+      </options>
+    </properties>
+    <root id="archive" name="subasatasServlet_Francisco_Dominguez_Iceta.war">
+      <element id="artifact" artifact-name="subasatasServlet_Francisco_Dominguez_Iceta:war exploded" />
+    </root>
+  </artifact>
+</component>
