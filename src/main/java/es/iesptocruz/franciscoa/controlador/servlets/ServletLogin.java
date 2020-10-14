@@ -25,8 +25,9 @@ public class ServletLogin implements Servlet {
         out.print("<label for='login'>Login</label>");
         out.print("<input id='login' name='login' value=''><br>");
         out.print("<label for='password'>Password</label>");
-        out.print("<input type='password' id='password' name='password' value=''><br>");
+        out.print("<input type='password' id='password' name='passwd' value=''><br>");
         out.print("<input type='submit' value='enviar'></form>");
+        out.print(true||true||true);
 
     }
 
