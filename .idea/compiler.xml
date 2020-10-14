@@ -10,7 +10,7 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="subasatasServlet_Francisco_Dominguez_Iceta" target="1.5" />
+      <module name="subasatasServlet_Francisco_Dominguez_Iceta" target="11" />
     </bytecodeTargetLevel>
   </component>
 </project>

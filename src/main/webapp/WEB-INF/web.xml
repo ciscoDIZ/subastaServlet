@@ -7,23 +7,23 @@
   <description>Aplicación de subastas con Servlets</description>
   <servlet>
     <servlet-name>registro</servlet-name>
-    <servlet-class>ServletRegistro</servlet-class>
+    <servlet-class>es.iesptocruz.franciscoa.controlador.servlets.ServletRegistro</servlet-class>
   </servlet>
   <servlet>
     <servlet-name>slogin</servlet-name>
-    <servlet-class>ServletLogin</servlet-class>
+    <servlet-class>es.iesptocruz.franciscoa.controlador.servlets.ServletLogin</servlet-class>
   </servlet>
   <servlet>
     <servlet-name>scomprar</servlet-name>
-    <servlet-class>ServletComprar</servlet-class>
+    <servlet-class>es.iesptocruz.franciscoa.controlador.servlets.ServletComprar</servlet-class>
   </servlet>
   <servlet>
     <servlet-name>svender</servlet-name>
-    <servlet-class>ServletVender</servlet-class>
+    <servlet-class>es.iesptocruz.franciscoa.controlador.servlets.ServletVender</servlet-class>
   </servlet>
   <servlet>
     <servlet-name>smain</servlet-name>
-    <servlet-class>ServletMain</servlet-class>
+    <servlet-class>es.iesptocruz.franciscoa.controlador.servlets.ServletMain</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>smain</servlet-name>
@@ -43,6 +43,10 @@
   </servlet-mapping>
   <servlet-mapping>
     <servlet-name>svender</servlet-name>
-    <url-pattern>/login</url-pattern>
+    <url-pattern>/vender</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>slogin</servlet-name>
+    <url-pattern>/*</url-pattern>
   </servlet-mapping>
 </web-app>

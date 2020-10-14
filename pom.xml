@@ -24,6 +24,9 @@
   </dependencies>
   <build>
     <finalName>subasatasServlet_Francisco_Dominguez_Iceta</finalName>
-    
   </build>
+  <properties>
+    <maven.compiler.source>11</maven.compiler.source>
+    <maven.compiler.target>11</maven.compiler.target>
+  </properties>
 </project>
