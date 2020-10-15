@@ -26,8 +26,8 @@ public class ServletRegistro implements Servlet {
 
     public void service(ServletRequest request, ServletResponse response) throws ServletException, IOException {
         PrintWriter out = response.getWriter();
-        out.print("<form action='main'");
-        out.print("<input type='hidden' name='accion' value='registrar'>");
+        out.print("<form action='main'>");
+        out.print("<input type='hidden' name='accion' value='registrar'/>");
         out.print("<label for='login'>Login</label>");
         out.print("<input id='login' name='login' value=''><br>");
         out.print("<label for='password'>Password</label>");

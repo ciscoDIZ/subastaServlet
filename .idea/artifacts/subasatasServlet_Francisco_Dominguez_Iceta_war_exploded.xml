@@ -13,6 +13,13 @@
         <element id="directory" name="classes">
           <element id="module-output" name="subasatasServlet_Francisco_Dominguez_Iceta" />
         </element>
+        <element id="directory" name="lib">
+          <element id="library" level="project" name="Maven: org.apache.tomcat.embed:tomcat-embed-core:9.0.38" />
+          <element id="library" level="project" name="Maven: org.apache.tomcat:tomcat-annotations-api:9.0.38" />
+          <element id="library" level="project" name="Maven: org.apache.tomcat.embed:tomcat-embed-jasper:9.0.38" />
+          <element id="library" level="project" name="Maven: org.apache.tomcat.embed:tomcat-embed-el:9.0.38" />
+          <element id="library" level="project" name="Maven: org.eclipse.jdt:ecj:3.18.0" />
+        </element>
       </element>
       <element id="directory" name="META-INF">
         <element id="file-copy" path="$PROJECT_DIR$/target/subasatasServlet_Francisco_Dominguez_Iceta/META-INF/MANIFEST.MF" />

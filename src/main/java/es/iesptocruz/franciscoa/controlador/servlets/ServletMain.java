@@ -1,10 +1,13 @@
 package es.iesptocruz.franciscoa.controlador.servlets;
 
 import javax.servlet.*;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpServletResponseWrapper;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.net.http.HttpResponse;
 import java.util.*;
 
 public class ServletMain implements Servlet {
@@ -89,8 +92,17 @@ public class ServletMain implements Servlet {
         String login = req.getParameter("login");
         String passwd= req.getParameter("passwd");
         String email = req.getParameter("email");
-        String action = req.getParameter("action");
+        String action = req.getParameter("accion");
+        String producto;
+        double valor;
         RequestDispatcher dispatcher;
+        PrintWriter out = res.getWriter();
+        Usuario u = (Usuario) ((HttpServletRequest)req).getSession().getAttribute("user");
+        if(u != null){
+            login = u.login;
+            passwd = u.passwd;
+            action = "validar";
+        }
         if(login == null || passwd == null || action == null) {
             dispatcher = req.getRequestDispatcher("login");
             dispatcher.forward(req,res);
@@ -98,6 +110,9 @@ public class ServletMain implements Servlet {
         switch (action){
             case "registrar":
                 if(registrarUsuario(login,passwd,email)){
+                    HttpSession session = ((HttpServletRequest)req).getSession();
+                    session.setAttribute("user", new Usuario(login,passwd,email));
+                    req.setAttribute("login",login);
                     dispatcher = req.getRequestDispatcher("login");
                     dispatcher.forward(req,res);
                 }else {
@@ -106,16 +121,57 @@ public class ServletMain implements Servlet {
                 }
                 break;
             case "validar":
-                if(!validarUsuario(login, passwd)){
+
+                if(u == null){
                     dispatcher = req.getRequestDispatcher("login");
                     dispatcher.forward(req,res);
                 }
+
+                res.setContentType("text/html");
+                ((HttpServletResponse)res).setHeader("refresh","5");
+                out.print("<!DOCTYPE html>");
+                out.print("<html>");
+                out.print("<body>");
+                out.print("<a href='vender'>Vender articulo</a>");
+                out.print("<a href='login?session=out'>Cerrar sesion</a>");
+                out.print("<h2></h2");
+                for (Map.Entry<String,ObjetoSubasta> objetoSubasta : articulos.entrySet()) {
+                    if(objetoSubasta.getValue().getPropietario().equals(login)){
+                        out.print("");
+                    }
+                }
+
+                out.print("</body>");
+                out.print("</html>");
                 break;
             case "comprar":
-
+                producto = req.getParameter("producto");
+                valor = Double.parseDouble(req.getParameter("valor"));
+                ObjetoSubasta objetoSubasta = articulos.get(producto);
+                if(objetoSubasta.valor < valor){
+                    objetoSubasta.setPuja(valor);
+                    articulos.put(producto,objetoSubasta);
+                }
+                dispatcher = req.getRequestDispatcher("main?accion=validar");
+                dispatcher.forward(req,res);
+                break;
+            case "vender":
+                producto = req.getParameter("producto");
+                valor = Double.parseDouble(req.getParameter("valor"));
+                articulos.put(producto,new ObjetoSubasta(producto, valor,null,login));
+                dispatcher = req.getRequestDispatcher("main?accion=validar");
+                dispatcher.forward(req,res);
+                break;
+            case "adjudicar":
+            case "cancelar":
+                producto = req.getParameter("producto");
+                articulos.remove(producto);
+                dispatcher = req.getRequestDispatcher("main?accion=validar");
+                dispatcher.forward(req,res);
                 break;
             default:
                 break;
+
         }
     }
 
@@ -148,4 +204,6 @@ public class ServletMain implements Servlet {
     Usuario buscarUsuario(String login){
         return usuarios.get(login);
     }
+
+
 }
