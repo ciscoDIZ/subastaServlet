@@ -101,7 +101,7 @@ public class ServletMain implements Servlet {
         if(u != null){
             login = u.login;
             passwd = u.passwd;
-            action = "validar";
+            action = (action==null)?"validar":action;
         }
         if(login == null || passwd == null || action == null) {
             dispatcher = req.getRequestDispatcher("login");
@@ -134,13 +134,19 @@ public class ServletMain implements Servlet {
                 out.print("<body>");
                 out.print("<a href='vender'>Vender articulo</a>");
                 out.print("<a href='login?session=out'>Cerrar sesion</a>");
-                out.print("<h2></h2");
+                out.print("<h2>Mis articulos</h2");
+                out.print("<table>");
+                out.print("<tr><th>Producto</th><th>Valor</th><th>Adjudicar</th><th>Cancelar</th></tr>");
                 for (Map.Entry<String,ObjetoSubasta> objetoSubasta : articulos.entrySet()) {
                     if(objetoSubasta.getValue().getPropietario().equals(login)){
-                        out.print("");
+                        out.print("<tr>");
+                        out.print("<td>"+objetoSubasta.getValue().producto+"</td><td>"+objetoSubasta.getValue().valor
+                        +"<td><a href='main?action=adjudicar&&producto="+objetoSubasta.getValue().producto+"'></td><td>" +
+                                "<a href='main?action=adjudicar&&producto="+objetoSubasta.getValue().producto+"'></td>");
+                        out.print("</tr>");
                     }
                 }
-
+                out.print("</table>");
                 out.print("</body>");
                 out.print("</html>");
                 break;

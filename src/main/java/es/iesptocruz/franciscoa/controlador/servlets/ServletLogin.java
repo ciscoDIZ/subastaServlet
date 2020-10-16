@@ -28,9 +28,6 @@ public class ServletLogin implements Servlet {
         if(req.getParameter("session") != null) {
             isSession = !req.getParameter("session").equals("out");
         }
-        if(!isSession){
-            u = null;
-        }
         if (u !=null){
             RequestDispatcher dispatcher = req.getRequestDispatcher("main?accion=validar");
             dispatcher.forward(req,res);
