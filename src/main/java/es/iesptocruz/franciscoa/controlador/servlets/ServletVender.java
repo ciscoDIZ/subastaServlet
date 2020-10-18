@@ -19,6 +19,7 @@ public class ServletVender implements Servlet {
 
     public void service(ServletRequest request, ServletResponse response) throws ServletException, IOException {
         PrintWriter out = response.getWriter();
+        response.setContentType("text/html");
         out.print("<form action='main'>");
         out.print("<input type='hidden' name='accion' value='vender'>");
         out.print("<label for='producto'>Producto</label>");

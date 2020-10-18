@@ -22,25 +22,21 @@ public class ServletLogin implements Servlet {
 
     public void service(ServletRequest req, ServletResponse res) throws ServletException, IOException {
         PrintWriter out = res.getWriter();
-        HttpSession session = ((HttpServletRequest)req).getSession();
-        ServletMain.Usuario u = (ServletMain.Usuario)session.getAttribute("user");
-        boolean isSession=false;
-        if(req.getParameter("session") != null) {
-            isSession = !req.getParameter("session").equals("out");
-        }
-        if (u !=null){
-            RequestDispatcher dispatcher = req.getRequestDispatcher("main?accion=validar");
-            dispatcher.forward(req,res);
-        }else {
-            out.print("<form action='main'>");
-            out.print("<input type='hidden' name='accion' value='validar'>");
-            out.print("<label for='login'>Login</label>");
-            out.print("<input id='login' name='login' value=''><br>");
-            out.print("<label for='password'>Password</label>");
-            out.print("<input type='password' id='password' name='passwd' value=''><br>");
-            out.print("<input type='submit' value='enviar'></form>");
-            out.print("<a href='registro'>Registro</a>");
-        }
+        res.setContentType("text/html");
+        out.print("<html>");
+        out.print("<body>");
+        out.print("<form action='main'>");
+        out.print("<input type='hidden' name='accion' value='validar'>");
+        out.print("<input type='hidden' name='log' value='1'>");
+        out.print("<label for='login'>Login</label>");
+        out.print("<input id='login' name='login' value=''><br>");
+        out.print("<label for='password'>Password</label>");
+        out.print("<input type='password' id='password' name='passwd' value=''><br>");
+        out.print("<input type='submit' value='enviar'></form>");
+        out.print("<a href='registro'>Registro</a>");
+        out.print("</body>");
+        out.print("</html>");
+
 
     }
 
