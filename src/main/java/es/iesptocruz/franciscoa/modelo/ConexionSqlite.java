@@ -6,13 +6,9 @@ import java.sql.SQLException;
 
 public class ConexionSqlite {
     //tablas
-    public static final String TOPERACIONES = "operaciones";
+
     //registros tabla resultados
-    public static final String TOPERACIONES_ID_OPERACION = "id_operacion";
-    public static final String TOPERACIONES_OPERANDO_A = "operando_a";
-    public static final String TOPERACIONES_OPERANDO_B = "operando_b";
-    public static final String TOPERACIONES_RESULTADO = "resultado";
-    public static final String TOPERACIONES_OPERADOR = "operador";
+
     //parámetros conexión
     public String jdbcUrl;
 

@@ -3,6 +3,7 @@ package es.iesptocruz.franciscoa.controlador.servlets;
 
 import es.iesptocruz.franciscoa.controlador.ObjetoSubasta;
 import es.iesptocruz.franciscoa.controlador.Usuario;
+import es.iesptocruz.franciscoa.vista.Subasta;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
@@ -13,26 +14,22 @@ import java.io.PrintWriter;
 import java.util.*;
 
 public class ServletMain implements Servlet {
-  
+
+    final Subasta subasta = new Subasta();
     private ServletConfig config;
-    private static Map<String, Usuario> usuarios;
-    private Map<String, ObjetoSubasta> articulos;
     HttpSession session;
     String login;
     String passwd;
     String email;
     String accion;
-    Usuario u;
-
-
 
 
     public void init(ServletConfig config) throws ServletException {
         if(config == null){
             throw new ServletException("error al crear el servlet");
         }
-        usuarios = new HashMap<>();
-        articulos = new HashMap<>();
+        subasta.setUsuarios(new HashMap<>());
+        subasta.setArticulos(new HashMap<>());
         this.config = config;
     }
 
@@ -51,25 +48,25 @@ public class ServletMain implements Servlet {
         double valor;
         RequestDispatcher dispatcher;
         PrintWriter out = res.getWriter();
-        u = (Usuario) ((HttpServletRequest)req).getSession().getAttribute("user");
+        subasta.setU((Usuario) ((HttpServletRequest) req).getSession().getAttribute("user"));
         HttpServletRequest request;
         HttpServletResponse response;
-        if(u != null){
-            login = u.getLogin();
-            passwd = u.getPasswd();
-            email = u.getEmail();
+        if(subasta.getU() != null){
+            login = subasta.getU().getLogin();
+            passwd = subasta.getU().getPasswd();
+            email = subasta.getU().getEmail();
             accion = (accion==null)?"validar":accion;
         }else{
              login = req.getParameter("login");
              passwd= req.getParameter("passwd");
              email = req.getParameter("email");
              accion = req.getParameter("accion");
-             u = usuarios.get(login);
-             if(u!=null){
-                 session.setAttribute("user",u);
+            subasta.setU(subasta.getUsuarios().get(login));
+             if(subasta.getU() !=null){
+                 session.setAttribute("user", subasta.getU());
                  dispatcher = req.getRequestDispatcher("main?validar");
                  dispatcher.forward(req,res);
-                 email = u.getEmail();
+                 email = subasta.getU().getEmail();
              }
         }
         if(login == null || passwd == null || email == null) {
@@ -90,7 +87,7 @@ public class ServletMain implements Servlet {
                 if(req.getParameter("log") != null){
                     login = req.getParameter("login");
                     passwd = req.getParameter("passwd");
-                    Usuario ulogin = usuarios.get(login);
+                    Usuario ulogin = subasta.getUsuarios().get(login);
                     if(ulogin != null && ulogin.getPasswd().equals(passwd)){
                         session.setAttribute(login,ulogin);
                     }else{
@@ -98,7 +95,7 @@ public class ServletMain implements Servlet {
                         dispatcher.forward(req,res);
                     }
                 }
-                if(u == null){
+                if(subasta.getU() == null){
                     dispatcher = req.getRequestDispatcher("login");
                     dispatcher.forward(req,res);
                 }
@@ -120,13 +117,7 @@ public class ServletMain implements Servlet {
                 producto = req.getParameter("producto");
                 valor = Double.parseDouble(req.getParameter("valor"));
                 String postor = req.getParameter("postor");
-                ObjetoSubasta objetoSubasta = articulos.get(producto);
-                if(objetoSubasta.getValor() < (valor+objetoSubasta.getValor())){
-                    if (u!=null) {
-                        objetoSubasta.setPuja(postor, valor);
-                        articulos.put(producto, objetoSubasta);
-                    };
-                }
+                subasta.comprar(producto, valor, postor);
 
                 response = (HttpServletResponse)res;
                 response.sendRedirect("main?accion=validar");
@@ -134,22 +125,19 @@ public class ServletMain implements Servlet {
             case "vender":
                 producto = req.getParameter("producto");
                 valor = Double.parseDouble(req.getParameter("valor"));
-                articulos.put(producto,new ObjetoSubasta(producto, valor,null,login));
+                subasta.vender(producto, valor, login);
                 response = (HttpServletResponse)res;
                 response.sendRedirect("main?accion=validar");
                 break;
             case "adjudicar":
                 producto = req.getParameter("producto");
-                objetoSubasta = articulos.get(producto);
-                objetoSubasta.setPropietario(objetoSubasta.getUsuario());
-                usuarios.get(objetoSubasta.getPropietario()).getArticulos().put(producto,objetoSubasta);
-                articulos.remove(producto);
+                subasta.adjudicar(producto);
                 response = (HttpServletResponse)res;
                 response.sendRedirect("main?accion=validar");
                 break;
             case "cancelar":
                 producto = req.getParameter("producto");
-                articulos.remove(producto);
+                subasta.cancelar(producto);
                 response = (HttpServletResponse)res;
                 response.sendRedirect("main?accion=validar");
                 break;
@@ -159,11 +147,27 @@ public class ServletMain implements Servlet {
         }
     }
 
+    private void cancelar(String producto) {
+        subasta.cancelar(producto);
+    }
+
+    private void adjudicar(String producto) {
+        subasta.adjudicar(producto);
+    }
+
+    private void vender(String producto, double valor,String login) {
+        subasta.vender(producto, valor, login);
+    }
+
+    private void comprar(String producto, double valor, String postor) {
+        subasta.comprar(producto, valor, postor);
+    }
+
     private void genTablasArticulos(String login, PrintWriter out) {
         out.print("<h2>Mis articulos</h2>");
         out.print("<table>");
         out.print("<tr><th>Producto</th><th>Valor</th><th>Adjudicar</th><th>Cancelar</th></tr>");
-        for (Map.Entry<String,ObjetoSubasta> entry : articulos.entrySet()) {
+        for (Map.Entry<String,ObjetoSubasta> entry : subasta.getArticulos().entrySet()) {
             if(entry.getValue().getPropietario().equals(login)){
                 out.print("<tr>");
                 out.print("<td>"+entry.getValue().getProducto()+"</td><td>"+entry.getValue().getValor()
@@ -176,7 +180,7 @@ public class ServletMain implements Servlet {
         out.print("<h2>Articulos</h2>");
         out.print("<table>");
         out.print("<tr><th>Producto</th><th>Valor</th><th>Adjudicar</th><th>Cancelar</th></tr>");
-        for (Map.Entry<String,ObjetoSubasta> objetoSubasta : articulos.entrySet()) {
+        for (Map.Entry<String,ObjetoSubasta> objetoSubasta : subasta.getArticulos().entrySet()) {
             if(!objetoSubasta.getValue().getPropietario().equals(login)){
                 out.print("<tr>");
                 out.print("<td>"+objetoSubasta.getValue().getProducto()+"</td><td>"+objetoSubasta.getValue().getValor()
@@ -204,16 +208,16 @@ public class ServletMain implements Servlet {
     }
 
     boolean registrarUsuario(String login, String passwd, String email){
-        boolean resultado = !usuarios.containsKey(login);
+        boolean resultado = !subasta.getUsuarios().containsKey(login);
         if(resultado){
             Usuario u = new Usuario(login,passwd,email);
-            usuarios.put(login, u);
+            subasta.getUsuarios().put(login, u);
         }
         return resultado;
     }
 
     Usuario buscarUsuario(String login){
-        return usuarios.get(login);
+        return subasta.getUsuarios().get(login);
     }
 
 
