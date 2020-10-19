@@ -1,5 +1,7 @@
 package es.iesptocruz.franciscoa.controlador.servlets;
 
+import es.iesptocruz.franciscoa.controlador.Usuario;
+
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
@@ -23,8 +25,8 @@ public class ServletComprar implements Servlet {
         PrintWriter out = res.getWriter();
         res.setContentType("text/html");
         String produto = req.getParameter("producto");
-        ServletMain.Usuario u = (ServletMain.Usuario)((HttpServletRequest)req).getSession().getAttribute("user");
-        String postor = u.login;
+        Usuario u = (Usuario)((HttpServletRequest)req).getSession().getAttribute("user");
+        String postor = u.getLogin();
         out.print("<form action='main'>");
         out.print("<input type='hidden' name='accion' value='comprar'>");
         out.print("<input type='hidden' name='producto' value='"+produto+"'>");

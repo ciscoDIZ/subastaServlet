@@ -10,22 +10,22 @@ import org.apache.catalina.webresources.DirResourceSet;
 import org.apache.catalina.webresources.StandardRoot;
 
 public class Server {
-	private String webappDirLocation;
-	private Tomcat tomcat;
+	private final String WEBBAPP_DIR_LOCATION;
+	private final Tomcat TOMCAT;
 	private String webPort;
 	private static Server server;
 	
 	private Server() {
-			webappDirLocation = "src/main/webapp/";
-			tomcat = new Tomcat();
+			WEBBAPP_DIR_LOCATION = "src/main/webapp/";
+			TOMCAT = new Tomcat();
 			webPort = System.getenv("PORT");
 	}
 	
 	public void setResources() {
-		StandardContext context = (StandardContext)tomcat.addWebapp("",
-				new File(webappDirLocation).getAbsolutePath());
+		StandardContext context = (StandardContext) TOMCAT.addWebapp("",
+				new File(WEBBAPP_DIR_LOCATION).getAbsolutePath());
 		System.out.println("configurando aplicacion con directorio base: "+
-				new File("./"+webappDirLocation).getAbsolutePath());
+				new File("./"+ WEBBAPP_DIR_LOCATION).getAbsolutePath());
 		File additionalWebInfClasses = new File("target/classes");
 		WebResourceRoot resources = new StandardRoot(context);
 		resources.addPreResources(new DirResourceSet(resources,
@@ -37,14 +37,14 @@ public class Server {
 		if(webPort == null || webPort.isEmpty()) {
 			webPort = port;
 		}
-		tomcat.setPort(Integer.valueOf(webPort));
+		TOMCAT.setPort(Integer.parseInt(webPort));
 	}
 	
 	public void setPort() {
 		if(webPort == null || webPort.isEmpty()) {
 			webPort = "8080";
 		}
-		tomcat.setPort(Integer.valueOf(webPort));
+		TOMCAT.setPort(Integer.parseInt(webPort));
 	}
 	private static Server initServer() {
 		Server retorno=null;
@@ -54,14 +54,14 @@ public class Server {
 		return retorno;
 	}
 	public void startTomcat() {
-		tomcat.enableNaming();
-		tomcat.getConnector();
+		TOMCAT.enableNaming();
+		TOMCAT.getConnector();
 		try {
-			tomcat.start();
+			TOMCAT.start();
 		}catch (LifecycleException e) {
 			e.printStackTrace();
 		}
-		tomcat.getServer().await();
+		TOMCAT.getServer().await();
 	}
 	
 	public static void ini() {
