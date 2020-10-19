@@ -26,14 +26,14 @@ public class Subasta {
         this.articulos = articulos;
     }
 
-    public Usuario u;
+    public Usuario usuario;
 
-    public Usuario getU() {
-        return u;
+    public Usuario getUsuario() {
+        return usuario;
     }
 
-    public void setU(Usuario u) {
-        this.u = u;
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
     }
 
     public ObjetoSubasta objetoSubasta;
@@ -59,7 +59,7 @@ public class Subasta {
     public void comprar(String producto, double valor, String postor) {
         objetoSubasta = articulos.get(producto);
         if (objetoSubasta.getValor() < (valor + objetoSubasta.getValor())) {
-            if (u != null) {
+            if (usuario != null) {
                 objetoSubasta.setPuja(postor, valor);
                 articulos.put(producto, objetoSubasta);
             }
